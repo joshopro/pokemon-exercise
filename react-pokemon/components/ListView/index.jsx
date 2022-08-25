@@ -16,16 +16,29 @@ class ListView extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  fetchPokemon() {
-    // your code here
+  componentDidMount() {
+    this.fetchPokemon();
   }
 
-  debouncedSearch() {
-    // your code here
+  async fetchPokemon(search) {
+    const url = new URL('/pokemon', window.location.href);
+    if (search) url.searchParams.set('search', search);
+    const res = await fetch(url).then(t => t.json());
+    this.setState({
+      pokemon: res || []
+    });
   }
 
-  onChange() {
-    // your code here
+  debouncedSearch(callback, timeout) {
+    return ({ target: { value }}) => {
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => callback(value), timeout);
+    };
+  }
+
+  onChange(value) {
+    console.log(value)
+    this.fetchPokemon(value);
   }
 
   render() {
@@ -37,9 +50,9 @@ class ListView extends Component {
         </Flexbox>
         <Flexbox marginTop='15px' padding='0px 10vw'>
           <Flexbox flexWrap='wrap'>
-          {pokemon.map(entry => {
+          {pokemon.map((entry, i) => {
                 return (
-                  <ListItemDisplay>
+                  <ListItemDisplay key={entry.name} id={`pokemon-${i}`}>
                     <Flexbox key={entry.name} flexDirection='column'>
                       <ListItemTitle>{entry.name}</ListItemTitle>
                       <img src={entry.image} />
