@@ -18,10 +18,12 @@ class ListView extends Component {
   }
 
   componentDidMount() {
+    this._mounted = true;
     this.calculateLazyLoading();
   }
 
   componentWillUnmount() {
+    this._mounted = false;
     document.removeEventListener("scroll", this.handleScroll);
   }
 
@@ -32,9 +34,11 @@ class ListView extends Component {
     url.searchParams.set("offset", offset);
     url.searchParams.set("limit", limit);
     const res = await fetch(url).then((t) => t.json());
-    this.setState({
-      pokemon: [...pokemon, ...res],
-    });
+    if (this._mounted) {
+      this.setState({
+        pokemon: [...pokemon, ...res],
+      });
+    }
   };
 
   debouncedSearch = (callback, timeout) => {
