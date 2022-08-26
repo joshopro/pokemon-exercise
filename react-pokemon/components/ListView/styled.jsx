@@ -17,4 +17,5 @@ export const ListItemDisplay = styled.div`
 export const ListItemTitle = styled.h2`
     font-size: 16px;
     font-weight: normal;
+    margin-left: 5px;
 `;
